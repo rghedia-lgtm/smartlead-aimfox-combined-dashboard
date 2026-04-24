@@ -4,16 +4,20 @@ const cors = require('cors');
 const path = require('path');
 const syncRouter = require('./routes/sync');
 const smartleadRouter = require('./routes/smartlead');
+const aimfoxRouter = require('./routes/aimfox');
+const exportRouter = require('./routes/export');
 require('./jobs/cronSync');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '20mb' }));
 
 app.use('/api/sync', syncRouter);
 app.use('/api/smartlead', smartleadRouter);
+app.use('/api/aimfox', aimfoxRouter);
+app.use('/api/export', exportRouter);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 

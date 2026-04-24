@@ -7,8 +7,8 @@ router.post('/', async (req, res) => {
   if (!apiKey) return res.status(400).json({ error: 'Missing Smartlead API key' });
 
   try {
-    const summary = await fetchAnalytics(apiKey);
-    res.json({ summary });
+    const result = await fetchAnalytics(apiKey);
+    res.json(result);
   } catch (err) {
     console.error('Smartlead error:', err.message);
     res.status(500).json({ error: err.message });
