@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const syncRouter = require('./routes/sync');
 const smartleadRouter = require('./routes/smartlead');
+const authRouter = require('./routes/auth');
 require('./jobs/cronSync');
 
 const app = express();
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+app.use('/api/auth', authRouter);
 app.use('/api/sync', syncRouter);
 app.use('/api/smartlead', smartleadRouter);
 
