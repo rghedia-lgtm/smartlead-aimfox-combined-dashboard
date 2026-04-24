@@ -25,7 +25,14 @@ export default function App() {
 
   useEffect(() => {
     fetch('/api/config').then(r => r.json()).then(d => {
-      setKeys({ smartlead: d.smartleadApiKey || '', aimfox: d.aimfoxApiKey || '' });
+      const k = { smartlead: d.smartleadApiKey || '', aimfox: d.aimfoxApiKey || '' };
+      setKeys(k);
+      // Auto-load if keys exist in env
+      if (k.smartlead || k.aimfox) {
+        setLoaded(true);
+        if (k.smartlead) runFetch(k.smartlead);
+        if (k.aimfox) loadAimfox(k.aimfox);
+      }
     }).catch(() => {});
   }, []);
 
@@ -97,9 +104,14 @@ export default function App() {
         {/* ── OVERVIEW ── */}
         {activeTab === 'Overview' && (
           <>
-            {(slOverview || afOverview) && (
+            {(slOverview || afOverview || slStatus === 'loading') && (
               <>
                 <div style={styles.statRow}>
+                  {slStatus === 'loading' && (
+                    <div style={{ flex: 1, background: '#fff', borderRadius: 10, padding: '1.25rem', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', color: '#64748b', fontSize: '0.85rem' }}>
+                      ⏳ Loading Smartlead campaigns... (may take 1-2 min)
+                    </div>
+                  )}
                   {slOverview && <>
                     <StatCard label="SL Campaigns" value={slOverview.totalCampaigns} color="#2563eb" />
                     <StatCard label="SL Total Leads" value={slOverview.totalLeads} color="#0ea5e9" />
