@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import CredentialsForm from './components/CredentialsForm';
 import SyncLog from './components/SyncLog';
 import SmartleadDashboard from './components/SmartleadDashboard';
-import LoginPage from './components/LoginPage';
 import { useSync } from './hooks/useSync';
-import { useAuth } from './hooks/useAuth';
 
 const TABS = [
   { id: 'smartlead', label: 'Smartlead Analytics' },
@@ -14,30 +12,12 @@ const TABS = [
 export default function App() {
   const [activeTab, setActiveTab] = useState('smartlead');
   const { status, log, summary, error, startSync } = useSync();
-  const { authState, onAuthenticated, logout } = useAuth();
-
-  if (authState === 'loading') {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9' }}>
-        <div style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Loading...</div>
-      </div>
-    );
-  }
-
-  if (authState === 'unauthenticated') {
-    return <LoginPage onAuthenticated={onAuthenticated} />;
-  }
 
   return (
     <div style={styles.page}>
       <header style={styles.header}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <h1 style={styles.title}>Campaign Dashboard</h1>
-            <p style={styles.subtitle}>Smartlead analytics and AimFox → Zoho CRM sync in one place.</p>
-          </div>
-          <button onClick={logout} style={styles.logoutBtn}>Logout</button>
-        </div>
+        <h1 style={styles.title}>Campaign Dashboard</h1>
+        <p style={styles.subtitle}>Smartlead analytics and AimFox → Zoho CRM sync in one place.</p>
       </header>
 
       <div style={styles.tabs}>
@@ -78,15 +58,6 @@ const styles = {
   header: { maxWidth: 960, margin: '0 auto 1.5rem' },
   title: { fontSize: '1.8rem', fontWeight: 700, color: '#1e293b', margin: 0 },
   subtitle: { marginTop: 6, fontSize: '0.9rem', color: '#64748b' },
-  logoutBtn: {
-    padding: '0.4rem 1rem',
-    background: 'transparent',
-    color: '#94a3b8',
-    border: '1px solid #e2e8f0',
-    borderRadius: 6,
-    fontSize: '0.82rem',
-    cursor: 'pointer',
-  },
   tabs: {
     maxWidth: 960,
     margin: '0 auto 1.5rem',
