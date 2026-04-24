@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const syncRouter = require('./routes/sync');
 const smartleadRouter = require('./routes/smartlead');
 require('./jobs/cronSync');
@@ -25,6 +26,13 @@ app.get('/api/config', (_req, res) => {
     smartleadApiKey: process.env.SMARTLEAD_API_KEY || '',
   });
 });
+
+// Serve React frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const clientDist = path.join(__dirname, '../client/dist');
+  app.use(express.static(clientDist));
+  app.get('*', (_req, res) => res.sendFile(path.join(clientDist, 'index.html')));
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
