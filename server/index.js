@@ -1,0 +1,31 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const syncRouter = require('./routes/sync');
+const smartleadRouter = require('./routes/smartlead');
+require('./jobs/cronSync');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(cors());
+app.use(express.json());
+
+app.use('/api/sync', syncRouter);
+app.use('/api/smartlead', smartleadRouter);
+
+app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+
+app.get('/api/config', (_req, res) => {
+  res.json({
+    zohoClientId: process.env.ZOHO_CLIENT_ID || '',
+    zohoClientSecret: process.env.ZOHO_CLIENT_SECRET || '',
+    zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN || '',
+    aimfoxApiKey: process.env.AIMFOX_API_KEY || '',
+    smartleadApiKey: process.env.SMARTLEAD_API_KEY || '',
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
